@@ -48,11 +48,18 @@ function createElements() {
     }
 }
 
-$(document).ready(function () {
-    createElements();
-});
+function selectionListeners() {
+    /* -------------------- single and multi select with ctrl ------------------- */
+    $(".button").click(function (event) {
+        if (event.ctrlKey) {
+            $(this).toggleClass("selected");
+        } else {
+            $(".button").removeClass("selected");
+            $(this).addClass("selected");
+        }
+    });
 
-$(document).ready(function () {
+    /* ------------------------------ selectionbox ------------------------------ */
     let isSelecting = false;
     let startSelectionX, startSelectionY;
 
@@ -65,16 +72,22 @@ $(document).ready(function () {
     $(document).on("mousemove", function (event) {
         if (isSelecting) {
             const selectionBox = $("#selection-box");
+            var currentX, currentY;
+            var maxWidth = parseInt($("#main").css("width"));
+            var maxHeight = parseInt($("#main").css("height"));
 
-            var currentX;
-            if (event.clientX < parseInt($("#main").css("width"))) {
+            if (event.clientX < maxWidth) {
                 currentX = event.clientX;
             } else {
-                currentX = parseInt($("#main").css("width"));
+                currentX = maxWidth;
+            }
+            if (event.clientY < maxHeight) {
+                currentY = event.clientY;
+            } else {
+                currentY = maxHeight;
             }
             const minX = Math.min(startSelectionX, currentX);
             const width = Math.abs(currentX - startSelectionX);
-            const currentY = event.clientY;
             const minY = Math.min(startSelectionY, currentY);
             const height = Math.abs(currentY - startSelectionY);
 
@@ -86,18 +99,16 @@ $(document).ready(function () {
                 border: "1px solid rgba(0, 0, 0, 0.5)",
             });
 
-            selectElements(minX, minY, width, height);
+            selectElements(minX, minY, width, height, event);
         }
     });
 
-    $(document).on("mouseup", function () {
+    $(document).on("mouseup", function (event) {
         isSelecting = false;
         clearSelectionBox();
     });
 
-    function selectElements(x, y, width, height) {
-        // Implementa la logica per selezionare gli elementi desiderati
-        // Puoi utilizzare ad esempio una funzione che controlla le coordinate degli elementi e aggiunge loro una classe "selezionato"
+    function selectElements(x, y, width, height, event) {
         $("#main")
             .find(".button")
             .each(function () {
@@ -113,9 +124,9 @@ $(document).ready(function () {
                     elementoX + elementoWidth <= x + width &&
                     elementoY + elementoHeight <= y + height
                 ) {
-                    elemento.addClass("selezionato");
-                } else {
-                    elemento.removeClass("selezionato");
+                    elemento.addClass("selected");
+                } else if (!event.ctrlKey) {
+                    elemento.removeClass("selected");
                 }
             });
     }
@@ -128,4 +139,50 @@ $(document).ready(function () {
             border: 0,
         });
     }
+
+    /* ------------------------ single click out deselect ----------------------- */
+
+    let isHoverButtons = false;
+
+    $(".button").on("mouseenter", function () {
+        isHoverButtons = true;
+    });
+
+    $(".button").on("mouseleave", function () {
+        isHoverButtons = false;
+    });
+
+    $(".main").on("mouseup", function (event) {
+        console.log("Mouse up event triggered");
+        console.log("Start Selection X:", startSelectionX);
+        console.log("Start Selection Y:", startSelectionY);
+
+        if (!isHoverButtons && !event.ctrlKey) {
+            console.log("ctrlkey: " + event.ctrlKey);
+            console.log("Mouse is not hovering over any button");
+            console.log(
+                "Button Width:",
+                parseInt($(".button:first").css("width"))
+            );
+            console.log(
+                "Button Height:",
+                parseInt($(".button:first").css("height"))
+            );
+
+            if (
+                Math.abs(event.clientX - startSelectionX) <
+                    parseInt($(".button:first").css("width")) ||
+                Math.abs(event.clientY - startSelectionY) <
+                    parseInt($(".button:first").css("height"))
+            ) {
+                console.log("Mouse released outside the buttons");
+                $(".button").removeClass("selected");
+            }
+        }
+    });
+}
+
+$(document).ready(function () {
+    createElements();
+    selectionListeners();
 });

@@ -1,8 +1,8 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
-const createWindow = () => {
-    const win = new BrowserWindow({
+const createMainWindow = () => {
+    const mainWindow = new BrowserWindow({
         title: "FM-MidiWingSetup",
         width: 1280,
         height: 720,
@@ -12,16 +12,16 @@ const createWindow = () => {
         enablePreferredSizeMode: true,
         icon: __dirname + "/icon.ico",
     });
-    win.setAspectRatio(16 / 9);
+    mainWindow.setAspectRatio(16 / 9);
 
-    win.loadFile(path.join(__dirname, "renderer/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
 };
 
 app.whenReady().then(() => {
-    createWindow();
+    createMainWindow();
 
     app.on("activate", () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
     });
 });
 
