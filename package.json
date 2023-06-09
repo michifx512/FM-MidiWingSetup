@@ -1,0 +1,23 @@
+{
+    "name": "fm-midiwingsetup",
+    "version": "1.0.0",
+    "description": "Setup software made for my FM-MidiWing",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/michifx512/FM-MidiWingSetup.git"
+    },
+    "author": "Francesco Michieletto (michifx512)",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/michifx512/FM-MidiWingSetup/issues"
+    },
+    "homepage": "https://github.com/michifx512/FM-MidiWingSetup#readme",
+    "dependencies": {
+        "electron": "^25.1.0"
+    }
+}
