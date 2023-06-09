@@ -12,6 +12,9 @@ const createWindow = () => {
         enablePreferredSizeMode: true,
         icon: __dirname + "/icon.ico",
     });
+    win.setAspectRatio(16 / 9);
+
+    win.loadFile(path.join(__dirname, "renderer/index.html"));
 };
 
 app.whenReady().then(() => {
